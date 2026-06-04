@@ -155,9 +155,6 @@ python3 run.py benchmarks/harness_deploy_pipeline/ --viz ./viz_output/
 
 # Convert the DOT file to an image (requires Graphviz installed)
 dot -Tpng viz_output/harness_deploy_pipeline.dot -o viz_output/harness_deploy_pipeline.png
-
-# Run all 8 benchmarks and check ground truth
-python3 evaluate.py
 ```
 
 `ANTHROPIC_API_KEY` is optional. Without it, EMERALD runs Layer 1 structural parsing only, sets `extraction_confidence = 0.6` on all extractions, and proceeds to composition and checking. The Z3 structural checker and fallback DFA checker still produce findings on all provided benchmarks without any API calls. LLM-dependent features — sensitivity hints, aggregation detection, semantic variable linking, and Layer 5 witness validation — are disabled in this mode, and findings are not filtered for false positives.
