@@ -84,27 +84,6 @@ The resulting diagram makes the data flow visually legible: you can trace a cred
 
 ### Benchmark Results
 
-Looking at the actual output carefully before writing anything.
-
-The harnesses in alphabetical order from the output are:
-
-1. `harness_code_review` — 2 findings (FINDING-001 critical CWE-200, FINDING-002 medium CWE-272); verifier dropped nothing
-2. `harness_data_pipeline` — 2 findings (FINDING-001 critical CWE-200, FINDING-002 critical CWE-359); verifier dropped nothing
-3. `harness_deploy_pipeline` — 4 findings (high CWE-200, high CWE-200, medium CWE-359, medium CWE-74); verifier dropped nothing
-4. `harness_incident_response` — 3 findings (critical CWE-200, critical CWE-200, medium CWE-272); verifier dropped one (SSH_KEY_PATH)
-5. `harness_monitoring` — 3 findings (critical CWE-200, critical CWE-359, critical CWE-200); verifier dropped one (SERVICE_REGISTRY GET request misidentified as exfiltration)
-6. `harness_onboarding` — 4 findings (high CWE-200, high CWE-319, medium CWE-359, medium CWE-272); verifier dropped two (PROVISIONED_USER misidentified flow, HR_CONTACT_EMAIL not PII)
-7. `harness_read_and_post` — 2 findings (medium CWE-200, medium CWE-359); verifier dropped one (SLACK_WEBHOOK_URL misidentified as the posted variable)
-8. `harness_research_assistant` — 2 findings (critical CWE-200, medium CWE-272); verifier dropped one (OPENAI_API_KEY to its own legitimate API)
-
-Now I'll write the evaluation section accurately.
-
----
-
-## Evaluation
-
-### Benchmark Results
-
 EMERALD was evaluated against the eight provided harnesses. All eight produce at least one cross-skill finding with `cross_skill: true`. All output passes schema validation. The table below reflects the final output after Layer 5 adversarial verification.
 
 | Harness | Findings Delivered | Max Severity | Findings Filtered | Key Variables | CWEs |
