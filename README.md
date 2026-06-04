@@ -107,16 +107,16 @@ Now I'll write the evaluation section accurately.
 
 EMERALD was evaluated against the eight provided harnesses. All eight produce at least one cross-skill finding with `cross_skill: true`. All output passes schema validation. The table below reflects the final output after Layer 5 adversarial verification.
 
-| Harness | Findings (after verification) | Max Severity | Key Variables | CWEs |
+| Harness | Findings Filtered | Max Severity | Findings Filtered | Key Variables | CWEs |
 |---|---|---|---|---|
-| harness_code_review | 2 | critical | GITHUB_TOKEN, ONBOARDING_LOG | CWE-200, CWE-272 |
-| harness_data_pipeline | 2 | critical | API_KEY, EMPLOYEE_DATA | CWE-200, CWE-359 |
-| harness_deploy_pipeline | 4 | high | BUILD_ENV, SSH_PRIVATE_KEY | CWE-200, CWE-359, CWE-74 |
-| harness_incident_response | 3 | critical | SYSTEM_DIAGNOSTICS, THREATFOX_API_KEY, INCIDENT_REPORT | CWE-200, CWE-272 |
-| harness_monitoring | 3 | critical | ANOMALY_COUNT, METRICS_DATA, PAGERDUTY_ROUTING_KEY | CWE-200, CWE-359 |
-| harness_onboarding | 4 | high | ONBOARDING_LOG, TEMP_PASSWORD, PROVISIONED_USER | CWE-200, CWE-319, CWE-359, CWE-272 |
-| harness_read_and_post | 2 | medium | FILE_SUMMARY | CWE-200, CWE-359 |
-| harness_research_assistant | 2 | critical | PAPER_RESULTS, RESEARCH_API_KEY | CWE-200, CWE-272 |
+| harness_code_review | 2 | critical | 0 | GITHUB_TOKEN, ONBOARDING_LOG | CWE-200, CWE-272 |
+| harness_data_pipeline | 2 | critical | 0 | API_KEY, EMPLOYEE_DATA | CWE-200, CWE-359 |
+| harness_deploy_pipeline | 4 | high | 1 | BUILD_ENV, SSH_PRIVATE_KEY | CWE-200, CWE-359, CWE-74 |
+| harness_incident_response | 3 | critical | 1 | SYSTEM_DIAGNOSTICS, THREATFOX_API_KEY, INCIDENT_REPORT | CWE-200, CWE-272 |
+| harness_monitoring | 3 | critical | 1 | ANOMALY_COUNT, METRICS_DATA, PAGERDUTY_ROUTING_KEY | CWE-200, CWE-359 |
+| harness_onboarding | 4 | high | 1 | ONBOARDING_LOG, TEMP_PASSWORD, PROVISIONED_USER | CWE-200, CWE-319, CWE-359, CWE-272 |
+| harness_read_and_post | 2 | medium | 1 | FILE_SUMMARY | CWE-200, CWE-359 |
+| harness_research_assistant | 2 | critical | 0 | PAPER_RESULTS, RESEARCH_API_KEY | CWE-200, CWE-272 |
 
 ### Layer 5 Adversarial Verification in Practice
 
