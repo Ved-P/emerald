@@ -108,7 +108,7 @@ Now I'll write the evaluation section accurately.
 EMERALD was evaluated against the eight provided harnesses. All eight produce at least one cross-skill finding with `cross_skill: true`. All output passes schema validation. The table below reflects the final output after Layer 5 adversarial verification.
 
 | Harness | Findings Filtered | Max Severity | Findings Filtered | Key Variables | CWEs |
-|---|---|---|---|---|
+|---|---|---|---|---|---|
 | harness_code_review | 2 | critical | 0 | GITHUB_TOKEN, ONBOARDING_LOG | CWE-200, CWE-272 |
 | harness_data_pipeline | 2 | critical | 0 | API_KEY, EMPLOYEE_DATA | CWE-200, CWE-359 |
 | harness_deploy_pipeline | 4 | high | 1 | BUILD_ENV, SSH_PRIVATE_KEY | CWE-200, CWE-359, CWE-74 |
