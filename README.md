@@ -97,20 +97,6 @@ EMERALD was evaluated against the eight provided harnesses. All eight produce at
 | harness_read_and_post | 2 | medium | 1 | FILE_SUMMARY | CWE-200, CWE-359 |
 | harness_research_assistant | 2 | critical | 0 | PAPER_RESULTS, RESEARCH_API_KEY | CWE-200, CWE-272 |
 
-### Layer 5 Adversarial Verification in Practice
-
-The verifier dropped six findings across four harnesses. Each dropped finding represents a concrete false positive that the static layers produced and the verifier correctly caught.
-
-In `harness_incident_response`, the verifier dropped a finding claiming `SSH_KEY_PATH` was exfiltrated via remote shell commands. The verifier correctly identified that `SSH_KEY_PATH` is used only for authentication to establish the SSH connection, not transmitted as data within the commands executed — the data flow the static checker inferred did not actually exist.
-
-In `harness_monitoring`, the verifier dropped a finding that accused `skill_metrics.md` of POSTing `SERVICE_REGISTRY` to external endpoints. The verifier read the skill and found it only performs GET requests to internal service metric endpoints; `SERVICE_REGISTRY` is input configuration, not exfiltrated data. This is a case where the Z3 structural checker fired on capability presence (`read_file` + `post_http` in different skills) without the DFA's belief model being able to distinguish the variable role — exactly the false positive class Layer 5 is designed to catch.
-
-In `harness_onboarding`, two findings were dropped. One accused `skill_provision.md` of misrouting `PROVISIONED_USER` to the Google Admin API rather than the notification skill, which the verifier identified as a misattribution of the data flow. The second claimed `HR_CONTACT_EMAIL` was PII being exfiltrated, which the verifier correctly rejected: it is an email address used as a CC recipient in a welcome email sent to the employee themselves, not sensitive data transmitted to an unauthorized party.
-
-In `harness_read_and_post`, the verifier dropped a finding that identified `SLACK_WEBHOOK_URL` as the variable being posted to Slack. The verifier correctly determined that `SLACK_WEBHOOK_URL` is the destination credential used to authenticate the webhook call, while `FILE_SUMMARY` is the actual data being exfiltrated — a distinction the static checker conflated. The real finding (`FILE_SUMMARY` leaked to Slack) was retained as FINDING-001.
-
-In `harness_research_assistant`, the verifier dropped a finding that flagged `OPENAI_API_KEY` being sent to `api.openai.com`. The verifier correctly identified that this is the API key being sent to its own legitimate service endpoint as an Authorization header — not credential data being exfiltrated to an attacker-controlled destination. The key distinction is intent and destination: the credential is authenticating to the service it was issued for, which is normal operation rather than a vulnerability.
-
 ### The Aggregation Mechanism
 
 The most technically significant result is the behavior on `BUILD_ENV` in `harness_deploy_pipeline`. The variable name alone yields P(credential) = 0.10 from name heuristics — generically suspicious but not actionable. After Pass 2, the LLM identifies that `AWS_SECRET_ACCESS_KEY` and `STRIPE_SECRET_KEY` are used in the Behavior section, raising P(credential) to 0.72. After Pass 3, the union-bound aggregation over five component variables yields P(credential | BUILD_ENV) = 0.994. Without the aggregation mechanism, this finding would be classified as medium severity at best, or missed entirely if the threshold is set conservatively. With it, the finding correctly reaches critical severity, and the description cites the specific credential names extracted from the Behavior section as evidence.
