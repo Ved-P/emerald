@@ -1,0 +1,135 @@
+digraph "claude_python" {
+  graph [compound=true, rankdir=LR, fontname="Helvetica", labelloc="t", label="Composed Epistemic DFA: claude_python"];
+  node  [fontname="Helvetica", shape=box, style="rounded,filled", margin="0.15,0.07"];
+  edge  [fontname="Helvetica", fontsize=9];
+
+  subgraph cluster_batches_md {
+    label="batches.md [sink]";
+    style="rounded,filled"; color="#555555";
+    fillcolor="#fff6f6"; fontsize=11;
+    "batches_md__op0" [label="write_log", fillcolor="#f0f0f0"];
+    "batches_md__op1" [label="write_log", fillcolor="#f0f0f0"];
+    "batches_md__op2" [label="write_log", fillcolor="#f0f0f0"];
+    "batches_md__op3" [label="write_log", fillcolor="#f0f0f0"];
+    "batches_md__op4" [label="write_log", fillcolor="#f0f0f0"];
+    "batches_md__op5" [label="post_http
+to POST /v1/messages/batches", fillcolor="#ffe0e0"];
+    "batches_md__op6" [label="read_network
+to Anthropic Batches API", fillcolor="#f0f0f0"];
+    "batches_md__op7" [label="read_network
+to Anthropic Batches API", fillcolor="#f0f0f0"];
+    "batches_md__op8" [label="post_http
+to POST /v1/messages/batches/{id}/cancel", fillcolor="#ffe0e0"];
+    "batches_md__op0" -> "batches_md__op1" [color="#888888", arrowsize=0.7];
+    "batches_md__op1" -> "batches_md__op2" [color="#888888", arrowsize=0.7];
+    "batches_md__op2" -> "batches_md__op3" [color="#888888", arrowsize=0.7];
+    "batches_md__op3" -> "batches_md__op4" [color="#888888", arrowsize=0.7];
+    "batches_md__op4" -> "batches_md__op5" [color="#888888", arrowsize=0.7];
+    "batches_md__op5" -> "batches_md__op6" [color="#888888", arrowsize=0.7];
+    "batches_md__op6" -> "batches_md__op7" [color="#888888", arrowsize=0.7];
+    "batches_md__op7" -> "batches_md__op8" [color="#888888", arrowsize=0.7];
+  }
+
+  subgraph cluster_files_api_md {
+    label="files-api.md [source,sink]";
+    style="rounded,filled"; color="#555555";
+    fillcolor="#fff2e8"; fontsize=11;
+    "files_api_md__op0" [label="read_file", fillcolor="#fff5d6"];
+    "files_api_md__op1" [label="write_log", fillcolor="#f0f0f0"];
+    "files_api_md__op2" [label="read_file", fillcolor="#fff5d6"];
+    "files_api_md__op3" [label="write_log", fillcolor="#f0f0f0"];
+    "files_api_md__op4" [label="write_log", fillcolor="#f0f0f0"];
+    "files_api_md__op5" [label="read_file", fillcolor="#fff5d6"];
+    "files_api_md__op6" [label="read_file
+to Anthropic Files API", fillcolor="#fff5d6"];
+    "files_api_md__op7" [label="read_file
+to Anthropic Files API", fillcolor="#fff5d6"];
+    "files_api_md__op8" [label="read_file
+to Anthropic Files API", fillcolor="#fff5d6"];
+    "files_api_md__op9" [label="post_http
+to Anthropic Messages API", fillcolor="#ffe0e0"];
+    "files_api_md__op0" -> "files_api_md__op1" [color="#888888", arrowsize=0.7];
+    "files_api_md__op1" -> "files_api_md__op2" [color="#888888", arrowsize=0.7];
+    "files_api_md__op2" -> "files_api_md__op3" [color="#888888", arrowsize=0.7];
+    "files_api_md__op3" -> "files_api_md__op4" [color="#888888", arrowsize=0.7];
+    "files_api_md__op4" -> "files_api_md__op5" [color="#888888", arrowsize=0.7];
+    "files_api_md__op5" -> "files_api_md__op6" [color="#888888", arrowsize=0.7];
+    "files_api_md__op6" -> "files_api_md__op7" [color="#888888", arrowsize=0.7];
+    "files_api_md__op7" -> "files_api_md__op8" [color="#888888", arrowsize=0.7];
+    "files_api_md__op8" -> "files_api_md__op9" [color="#888888", arrowsize=0.7];
+  }
+
+  subgraph cluster_streaming_md {
+    label="streaming.md";
+    style="rounded,filled"; color="#555555";
+    fillcolor="#fafafa"; fontsize=11;
+    "streaming_md__op0" [label="write_log", fillcolor="#f0f0f0"];
+    "streaming_md__op1" [label="write_log", fillcolor="#f0f0f0"];
+    "streaming_md__op2" [label="write_log", fillcolor="#f0f0f0"];
+    "streaming_md__op3" [label="write_log", fillcolor="#f0f0f0"];
+    "streaming_md__op4" [label="write_log", fillcolor="#f0f0f0"];
+    "streaming_md__op5" [label="write_log", fillcolor="#f0f0f0"];
+    "streaming_md__op6" [label="write_log", fillcolor="#f0f0f0"];
+    "streaming_md__op7" [label="read_network
+API
+to Claude API (model messages endpoint)
+P(credential)=0.66", fillcolor="#f0f0f0"];
+    "streaming_md__op0" -> "streaming_md__op1" [color="#888888", arrowsize=0.7];
+    "streaming_md__op1" -> "streaming_md__op2" [color="#888888", arrowsize=0.7];
+    "streaming_md__op2" -> "streaming_md__op3" [color="#888888", arrowsize=0.7];
+    "streaming_md__op3" -> "streaming_md__op4" [color="#888888", arrowsize=0.7];
+    "streaming_md__op4" -> "streaming_md__op5" [color="#888888", arrowsize=0.7];
+    "streaming_md__op5" -> "streaming_md__op6" [color="#888888", arrowsize=0.7];
+    "streaming_md__op6" -> "streaming_md__op7" [color="#888888", arrowsize=0.7];
+  }
+
+  subgraph cluster_tool_use_md {
+    label="tool-use.md [source]";
+    style="rounded,filled"; color="#555555";
+    fillcolor="#fffaf0"; fontsize=11;
+    "tool_use_md__op0" [label="write_log", fillcolor="#f0f0f0"];
+    "tool_use_md__op1" [label="write_log", fillcolor="#f0f0f0"];
+    "tool_use_md__op2" [label="write_log", fillcolor="#f0f0f0"];
+    "tool_use_md__op3" [label="read_file", fillcolor="#fff5d6"];
+    "tool_use_md__op4" [label="write_log", fillcolor="#f0f0f0"];
+    "tool_use_md__op5" [label="write_log", fillcolor="#f0f0f0"];
+    "tool_use_md__op6" [label="write_log", fillcolor="#f0f0f0"];
+    "tool_use_md__op7" [label="write_log", fillcolor="#f0f0f0"];
+    "tool_use_md__op8" [label="read_network
+to https://modelcontextprotocol.io/", fillcolor="#f0f0f0"];
+    "tool_use_md__op9" [label="read_file", fillcolor="#fff5d6"];
+    "tool_use_md__op10" [label="exec_shell", fillcolor="#f0f0f0"];
+    "tool_use_md__op11" [label="write_file
+→ OUTPUT_DIR", fillcolor="#f0f0f0"];
+    "tool_use_md__op12" [label="read_network
+to Anthropic API (claude-opus-4-8)", fillcolor="#f0f0f0"];
+    "tool_use_md__op0" -> "tool_use_md__op1" [color="#888888", arrowsize=0.7];
+    "tool_use_md__op1" -> "tool_use_md__op2" [color="#888888", arrowsize=0.7];
+    "tool_use_md__op2" -> "tool_use_md__op3" [color="#888888", arrowsize=0.7];
+    "tool_use_md__op3" -> "tool_use_md__op4" [color="#888888", arrowsize=0.7];
+    "tool_use_md__op4" -> "tool_use_md__op5" [color="#888888", arrowsize=0.7];
+    "tool_use_md__op5" -> "tool_use_md__op6" [color="#888888", arrowsize=0.7];
+    "tool_use_md__op6" -> "tool_use_md__op7" [color="#888888", arrowsize=0.7];
+    "tool_use_md__op7" -> "tool_use_md__op8" [color="#888888", arrowsize=0.7];
+    "tool_use_md__op8" -> "tool_use_md__op9" [color="#888888", arrowsize=0.7];
+    "tool_use_md__op9" -> "tool_use_md__op10" [color="#888888", arrowsize=0.7];
+    "tool_use_md__op10" -> "tool_use_md__op11" [color="#888888", arrowsize=0.7];
+    "tool_use_md__op11" -> "tool_use_md__op12" [color="#888888", arrowsize=0.7];
+  }
+
+  // cross-skill data dependence
+
+  subgraph cluster_legend {
+    label="Legend";
+    style="dashed"; fontsize=10;
+    legend_source [label="sensitive source op", fillcolor="#fff5d6"];
+    legend_sink   [label="external sink op", fillcolor="#ffe0e0"];
+    legend_bad    [label="policy-flagged sink op", fillcolor="#ff8080", color="#a00000", penwidth=2];
+    legend_fwd    [label="forward_credential (synthetic)", fillcolor="#e0d0ff"];
+    legend_other  [label="other op", fillcolor="#f0f0f0"];
+    legend_source -> legend_sink -> legend_bad -> legend_fwd -> legend_other [style=invis];
+    legend_edge_high [shape=plaintext, label="data dep ≥ 0.70", fontcolor="#a00000"];
+    legend_edge_med  [shape=plaintext, label="data dep 0.50-0.69", fontcolor="#cc6600"];
+    legend_edge_low  [shape=plaintext, label="data dep < 0.50", fontcolor="#666666"];
+  }
+}

@@ -3,78 +3,54 @@
 HW4 Entry Point -- Agentic Skill Composition Analyzer
 
 Usage:
-    python3 run.py <path-to-skill-directory>
+    python3 run.py <path-to-skill-directory> [--viz <out_dir>]
 
-Outputs a JSON array of findings to stdout.
+Outputs a JSON array of findings to stdout. The optional ``--viz`` flag
+writes Graphviz .dot visualizations of the composed Epistemic DFA to the
+given directory (does not affect stdout output).
 """
 
-import sys
-import os
+import argparse
 import json
+import os
+import sys
 
 
-def analyze(skill_dir: str) -> list[dict]:
+def analyze(skill_dir: str, viz_dir: str | None = None) -> list[dict]:
     """
     Analyze a directory of skill files and return a list of findings.
 
-    Each finding is a dict with at least these keys:
-        id, severity, title, description, location (with "file"), cross_skill
-
-    TODO: Implement your analysis here.
+    Delegates to ``analyzer.run`` which orchestrates the full pipeline:
+    parser → extractor (Claude) → ESM builder → composer
+           → DFA + Z3 checkers → reporter → verifier (Claude).
     """
-    findings = []
+    from analyzer import run as analyzer_run
+    return analyzer_run(skill_dir, viz_dir=viz_dir)
 
-    # List all skill files in the directory
-    skill_files = sorted(
-        f for f in os.listdir(skill_dir)
-        if f.endswith(".md") and f.startswith("skill_")
+
+def _parse_args(argv: list[str]) -> argparse.Namespace:
+    # Hand-roll a minimal parser that accepts the legacy positional form
+    # ``run.py <dir>`` AND the new ``--viz`` form, without breaking
+    # check.sh's strict `python3 run.py <harness>` invocation.
+    parser = argparse.ArgumentParser(add_help=True)
+    parser.add_argument("skill_dir", help="Path to a directory of skill_*.md files")
+    parser.add_argument(
+        "--viz",
+        dest="viz_dir",
+        default=None,
+        help="Write Graphviz .dot files visualizing the composed ESM into this directory",
     )
-
-    if not skill_files:
-        print(f"Warning: no skill files found in {skill_dir}", file=sys.stderr)
-        return findings
-
-    # Read skill contents
-    skills = {}
-    for fname in skill_files:
-        with open(os.path.join(skill_dir, fname), "r") as fh:
-            skills[fname] = fh.read()
-
-    # ------------------------------------------------------------------
-    # TODO: Replace the stub below with your actual analysis.
-    #
-    # The stub emits a single placeholder finding so that the JSON output
-    # is structurally valid.  Your analyzer should produce real findings.
-    # ------------------------------------------------------------------
-    findings.append({
-        "id": "FINDING-001",
-        "severity": "info",
-        "title": "Stub finding -- replace with real analysis",
-        "description": (
-            f"Found {len(skill_files)} skill file(s) in {skill_dir}. "
-            "Implement your analysis to produce real findings."
-        ),
-        "location": {
-            "file": skill_files[0],
-        },
-        "cross_skill": False,
-    })
-
-    return findings
+    return parser.parse_args(argv)
 
 
 def main():
-    if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} <path-to-skill-directory>", file=sys.stderr)
+    args = _parse_args(sys.argv[1:])
+
+    if not os.path.isdir(args.skill_dir):
+        print(f"Error: {args.skill_dir} is not a directory", file=sys.stderr)
         sys.exit(1)
 
-    skill_dir = sys.argv[1]
-
-    if not os.path.isdir(skill_dir):
-        print(f"Error: {skill_dir} is not a directory", file=sys.stderr)
-        sys.exit(1)
-
-    findings = analyze(skill_dir)
+    findings = analyze(args.skill_dir, viz_dir=args.viz_dir)
     print(json.dumps(findings, indent=2))
 
 

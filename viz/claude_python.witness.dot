@@ -1,0 +1,7 @@
+digraph "claude_python_witness" {
+  graph [compound=true, rankdir=LR, fontname="Helvetica", labelloc="t", label="Witness paths: claude_python"];
+  node  [fontname="Helvetica", shape=box, style="rounded,filled", margin="0.12,0.06"];
+  edge  [fontname="Helvetica", fontsize=9];
+
+  empty [label="No findings to display", fillcolor="#dddddd"];
+}
