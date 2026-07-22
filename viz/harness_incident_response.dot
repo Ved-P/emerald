@@ -1,0 +1,92 @@
+digraph "harness_incident_response" {
+  graph [compound=true, rankdir=LR, fontname="Helvetica", labelloc="t", label="Composed Epistemic DFA: harness_incident_response"];
+  node  [fontname="Helvetica", shape=box, style="rounded,filled", margin="0.15,0.07"];
+  edge  [fontname="Helvetica", fontsize=9];
+
+  subgraph cluster_skill_collect_md {
+    label="skill_collect.md [source,sink]";
+    style="rounded,filled"; color="#555555";
+    fillcolor="#fff2e8"; fontsize=11;
+    "skill_collect_md__op0" [label="read_file", fillcolor="#fff5d6"];
+    "skill_collect_md__op1" [label="read_env
+COLLECTION_SCOPE", fillcolor="#fff5d6"];
+    "skill_collect_md__op2" [label="read_file
+COLLECTION_SCOPE", fillcolor="#fff5d6"];
+    "skill_collect_md__op3" [label="exec_shell
+→ SYSTEM_DIAGNOSTICS", fillcolor="#f0f0f0"];
+    "skill_collect_md__op4" [label="read_file
+→ SYSTEM_DIAGNOSTICS", fillcolor="#fff5d6"];
+    "skill_collect_md__op5" [label="ssh_execute
+SSH_KEY_PATH → SYSTEM_DIAGNOSTICS
+to TARGET_HOST
+P(secret)=0.85", fillcolor="#ffe0e0"];
+    "skill_collect_md__op0" -> "skill_collect_md__op1" [color="#888888", arrowsize=0.7];
+    "skill_collect_md__op1" -> "skill_collect_md__op2" [color="#888888", arrowsize=0.7];
+    "skill_collect_md__op2" -> "skill_collect_md__op3" [color="#888888", arrowsize=0.7];
+    "skill_collect_md__op3" -> "skill_collect_md__op4" [color="#888888", arrowsize=0.7];
+    "skill_collect_md__op4" -> "skill_collect_md__op5" [color="#888888", arrowsize=0.7];
+  }
+
+  subgraph cluster_skill_analyze_md {
+    label="skill_analyze.md [sink]";
+    style="rounded,filled"; color="#555555";
+    fillcolor="#fff6f6"; fontsize=11;
+    "skill_analyze_md__op0" [label="post_http
+SYSTEM_DIAGNOSTICS
+to https://threatfox-api.abuse.ch/api/v1/
+P(secret)=0.90", fillcolor="#ff8080", color="#a00000", penwidth=2];
+    "skill_analyze_md__op1" [label="post_http
+THREATFOX_API_KEY
+to https://threatfox-api.abuse.ch/api/v1/
+P(credential)=0.92", fillcolor="#ffe0e0"];
+    "skill_analyze_md__op2" [label="post_http
+INCIDENT_TIMESTAMP
+to https://analysis.securityvendor.io/ap…", fillcolor="#ffe0e0"];
+    "skill_analyze_md__op3" [label="post_http
+ORGANIZATION_ID
+to https://analysis.securityvendor.io/ap…", fillcolor="#ffe0e0"];
+    "skill_analyze_md__op4" [label="post_http
+SYSTEM_DIAGNOSTICS
+to https://analysis.securityvendor.io/ap…
+P(secret)=0.90", fillcolor="#ffe0e0"];
+    "skill_analyze_md__op5" [label="post_http
+THREATFOX_API_KEY
+to https://analysis.securityvendor.io/ap…
+P(credential)=0.92", fillcolor="#ffe0e0"];
+    "skill_analyze_md__op0" -> "skill_analyze_md__op1" [color="#888888", arrowsize=0.7];
+    "skill_analyze_md__op1" -> "skill_analyze_md__op2" [color="#888888", arrowsize=0.7];
+    "skill_analyze_md__op2" -> "skill_analyze_md__op3" [color="#888888", arrowsize=0.7];
+    "skill_analyze_md__op3" -> "skill_analyze_md__op4" [color="#888888", arrowsize=0.7];
+    "skill_analyze_md__op4" -> "skill_analyze_md__op5" [color="#888888", arrowsize=0.7];
+  }
+
+  // cross-skill data dependence
+  "skill_collect_md__op3" -> "skill_analyze_md__op0" [label="SYSTEM_DIAGNOSTICS
+P(secret)=0.90", color="#a00000", style="dashed", penwidth=2.5];
+  "skill_collect_md__op3" -> "skill_analyze_md__op4" [label="SYSTEM_DIAGNOSTICS
+P(secret)=0.90", color="#a00000", style="dashed", penwidth=2.5];
+  "skill_collect_md__op4" -> "skill_analyze_md__op0" [label="SYSTEM_DIAGNOSTICS
+P(secret)=0.90", color="#a00000", style="dashed", penwidth=2.5];
+  "skill_collect_md__op4" -> "skill_analyze_md__op4" [label="SYSTEM_DIAGNOSTICS
+P(secret)=0.90", color="#a00000", style="dashed", penwidth=2.5];
+  "skill_collect_md__op5" -> "skill_analyze_md__op0" [label="SYSTEM_DIAGNOSTICS
+P(secret)=0.90", color="#a00000", style="dashed", penwidth=2.5];
+  "skill_collect_md__op5" -> "skill_analyze_md__op4" [label="SYSTEM_DIAGNOSTICS
+P(secret)=0.90", color="#a00000", style="dashed", penwidth=2.5];
+  "skill_collect_md__op0" -> "skill_analyze_md__op2" [label="INCIDENT_TIMESTAMP
+P(untrusted_external)=0.05", color="#888888", style="dashed", penwidth=1.0];
+
+  subgraph cluster_legend {
+    label="Legend";
+    style="dashed"; fontsize=10;
+    legend_source [label="sensitive source op", fillcolor="#fff5d6"];
+    legend_sink   [label="external sink op", fillcolor="#ffe0e0"];
+    legend_bad    [label="policy-flagged sink op", fillcolor="#ff8080", color="#a00000", penwidth=2];
+    legend_fwd    [label="forward_credential (synthetic)", fillcolor="#e0d0ff"];
+    legend_other  [label="other op", fillcolor="#f0f0f0"];
+    legend_source -> legend_sink -> legend_bad -> legend_fwd -> legend_other [style=invis];
+    legend_edge_high [shape=plaintext, label="data dep ≥ 0.70", fontcolor="#a00000"];
+    legend_edge_med  [shape=plaintext, label="data dep 0.50-0.69", fontcolor="#cc6600"];
+    legend_edge_low  [shape=plaintext, label="data dep < 0.50", fontcolor="#666666"];
+  }
+}

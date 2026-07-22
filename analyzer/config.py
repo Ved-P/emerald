@@ -104,7 +104,7 @@ MAX_FINDINGS = 20
 # Both stages fall back gracefully (heuristic / passthrough) if the
 # anthropic SDK isn't installed or ANTHROPIC_API_KEY is unset.
 # ---------------------------------------------------------------------------
-LLM_MODEL_DEFAULT = "claude-opus-4-7"
+LLM_MODEL_DEFAULT = "claude-haiku-4-5"
 LLM_TIMEOUT_SECONDS = 60
 LLM_MAX_TOKENS_EXTRACTOR = 2000
 LLM_MAX_TOKENS_VERIFIER = 1500

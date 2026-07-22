@@ -1,0 +1,39 @@
+digraph "harness_incident_response_witness" {
+  graph [compound=true, rankdir=LR, fontname="Helvetica", labelloc="t", label="Witness paths: harness_incident_response"];
+  node  [fontname="Helvetica", shape=box, style="rounded,filled", margin="0.12,0.06"];
+  edge  [fontname="Helvetica", fontsize=9];
+
+  subgraph cluster_finding_1 {
+    label="FINDING-001 · critical · Secret exfiltration via HTTP POST (skill_collect.md → skill…";
+    style="rounded"; color="#555555"; fontsize=10;
+    "f1_src" [label="skill_collect.md
+read_file", fillcolor="#fff5d6"];
+    "f1_sink" [label="skill_analyze.md
+post_http
+SYSTEM_DIAGNOSTICS
+to https://threatfox-api.abuse.ch/api/v1/
+P(secret)=0.90", fillcolor="#ff8080", color="#a00000", penwidth=2];
+    "f1_src" -> "f1_sink" [color="#a00000", penwidth=2.0, style="dashed"];
+  }
+  subgraph cluster_finding_2 {
+    label="FINDING-002 · critical · Credential exfiltration via HTTP POST (skill_analyze.md)";
+    style="rounded"; color="#555555"; fontsize=10;
+    "f2_src" [label="skill_collect.md
+read_file", fillcolor="#fff5d6"];
+    "f2_sink" [label="skill_analyze.md
+post_http
+SYSTEM_DIAGNOSTICS
+to https://threatfox-api.abuse.ch/api/v1/
+P(secret)=0.90", fillcolor="#ff8080", color="#a00000", penwidth=2];
+    "f2_src" -> "f2_sink" [color="#a00000", penwidth=2.0, style="dashed"];
+  }
+  subgraph cluster_finding_3 {
+    label="FINDING-003 · medium · Unnecessary secret forwarding to downstream skill";
+    style="rounded"; color="#555555"; fontsize=10;
+    "f3_src" [label="(unknown source)
+(source op inferred)", fillcolor="#fff5d6"];
+    "f3_sink" [label="skill_analyze.md
+(sink op)", fillcolor="#ff8080", color="#a00000", penwidth=2];
+    "f3_src" -> "f3_sink" [color="#a00000", penwidth=2.0, style="dashed"];
+  }
+}
